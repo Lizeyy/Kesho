@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://kit.fontawesome.com/b34d66382a.js" crossorigin="anonymous"></script>
+
+    <title>Drogeria Kesho!</title>
+
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-dark justify-content-around" id="main">
+        <div><a class="navbar-brand" href="/index"><img style="width: 50%;" th:src="@{/images/Logo.png}"/></a></div>
+        <div class="d-flex">
+            <a class="navbar-brand" href="/login">
+                <i class="fas fa-user"></i> &nbsp;KONTO</a>
+            <a class="navbar-brand" href="/logout">
+                <i class="fas fa-sign-out-alt"></i></i> &nbsp;WYLOGUJ</a>
+        </div>
+    </nav>
+</header>
+
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error}">
+    <i class="fas fa-exclamation-circle fa-spin"></i>
+    <h3 th:text="'&emsp;' + ${error} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle fa-spin"></i>
+</div>
+
+    <div class="m-4">
+        <form method="post" th:action="@{/staff/editProduct(id=${product.id})}" th:object="${editItems}">
+            <div class="d-flex row">
+                <div class="col-12 col-lg-6" style="position: relative;">
+                    <div class="expandedImg img-thumbnail text-center">
+                        <img th:src="@{'/' + ${photos.get(0).name}}" id="expandedImg" class="w-75">
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="w-25 hover-zoom img-thumbnail" th:each="photo: ${photos}">
+                            <img class="w-100" th:src="@{'/' + ${photo.name}}" onclick="gallery(this);">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h2 class="mb-4 mt-4 mt-lg-0" th:text="${product.name}"></h2>
+                    <div class="mt-3">
+                        <label class="h4">Cena regularna</label>
+                        <div class="d-flex align-items-baseline">
+                            <h3 class="w-25" th:text="${product.getParsedPrice()} + ' zł'"></h3>
+                            <input class="form-control w-auto dec" type="number" min="0.00" step="0.01" placeholder="0,00" th:field="*{newPrice}">
+                        </div>
+                        <hr>
+                        <label class="h4">Ilość</label>
+                        <div class="d-flex align-items-baseline">
+                            <h3 class="w-25" th:text="${product.quantity}"></h3>
+                            <input class="form-control w-auto" th:field="*{newQuantity}" type="number" min="0" step="1" pattern="[0-99999]">
+                        </div>
+                        <hr>
+                        <label class="h4 mt-4">Aktywne promocje</label>
+                        <div th:if="${activeSale}">
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-2">Data od </label>
+                                <p class="h5 col-9" th:text="${activeSale.dateFrom}"></p>
+                            </div>
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-2">Data do</label>
+                                <p class="h5 col-3" th:text="${activeSale.dateTo}"></p>
+                                <div class="col-6">
+                                <input class="form-control w-100 dateT" th:field="*{newDate}" type="date"></div>
+                            </div>
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-2">Cena</label>
+                                <p class="h5 col-3" th:text="${activeSale.price} + ' zł'"></p>
+                                <div class="col-6">
+                                <input class="form-control w-100 dec" th:field="*{newSalePrice}" min="0.00" step="0.01" placeholder="0,00" type="number"></div>
+                            </div>
+                        </div>
+                        <div th:if="${activeSale == false}">
+                            <h5 class="text-danger">Brak aktywnych promocji</h5>
+                        </div>
+
+                        <label class="h4 mt-4">Przyszłe promocje</label>
+                        <div th:if="${nextSale}">
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-2">Data od </label>
+                                <p class="h5 col-3" th:text="${nextSale.dateFrom}"></p>
+                                <div class="col-6">
+                                    <input class="form-control w-100 dateT" th:field="*{newUpNextDateFrom}" type="date"></div>
+                            </div>
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-2">Data do</label>
+                                <p class="h5 col-3" th:text="${nextSale.dateTo}"></p>
+                                <div class="col-6">
+                                    <input class="form-control w-100 dateT" th:field="*{newUpNextDateTo}" type="date"></div>
+                            </div>
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-2">Cena</label>
+                                <p class="h5 col-3" th:text="${nextSale.price} + ' zł'"></p>
+                                <div class="col-6">
+                                    <input class="form-control w-100 dec" min="0.00" step="0.01" placeholder="0,00" th:field="*{newUpNextSalePrice}" type="number"></div>
+                            </div>
+                        </div>
+                        <div th:if="${nextSale == false}">
+                            <h5 class="text-danger">Brak przyszłych promocji</h5>
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-3">Data od </label>
+                                <div class="col-6">
+                                    <input class="form-control w-100 dateT" th:field="*{newNextDateFrom}" type="date"></div>
+                            </div>
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-3">Data do</label>
+                                <div class="col-6">
+                                    <input class="form-control w-100 dateT" th:field="*{newNextDateTo}" type="date"></div>
+                            </div>
+                            <div class="d-flex align-items-baseline row">
+                                <label class="me-3 col-3">Cena</label>
+                                <div class="col-6">
+                                    <input class="form-control w-100 dec" min="0.00" step="0.01" placeholder="0,00" th:field="*{newNextSalePrice}" type="number"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-9">
+                    <textarea class="form-control" id="writeIn" style="height: 15em;" th:field="*{newDescription}" onload="write(this)"></textarea>
+                    <textarea style="display: none" id="writeOn" th:text="${product.description}"></textarea>
+                </div>
+                <div class="col-2">
+                    <input class="btn btn-light btn-outline-dark" type="submit" value="Zapisz">
+                </div>
+            </div>
+            <div>
+                <label class="h4 mt-4">Przeszłe promocje</label>
+                <div th:if="${prevSale}">
+                    <table class="w-100 table">
+                        <thead>
+                            <td><label class="me-3 col-3">Data od </label></td>
+                            <td><label class="me-3 col-3">Data do</label></td>
+                            <td><label class="me-3 col-3">Cena</label></td>
+                        </thead>
+                        <tbody>
+                            <tr th:each="prev: ${prevSale}">
+                                <td><p class="h5 col-9" th:text="${prev.dateFrom}"></p></td>
+                                <td><p class="h5 col-3" th:text="${prev.dateTo}"></p></td>
+                                <td><p class="h5 col-3" th:text="${prev.price} + ' zł'"></p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:if="${prevSale == false}">
+                    <h5 class="text-danger">Brak przeszłych promocji</h5>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+<br><br>
+<footer>
+    <hr class="m-8">
+    <div>
+        <h6 style="text-align: center;">Projekt zaliczeniowy z przedmiotu Aplikacje Bazodanowe w Języku Java - Izabela Wojtowicz</h6>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.js"></script>
+<script src="/scripts.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    $(".dec").change(function() {
+    $(this).val(parseFloat($(this).val()).toFixed(2));
+    });
+    });
+
+    document.getElementById("writeIn").innerHTML = document.getElementById("writeOn").innerHTML;
+
+    let i;
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+       dd = '0' + dd;
+    }
+    if (mm < 10) {
+       mm = '0' + mm;
+    }
+    today = yyyy + '-' + mm + '-' + dd;
+    let minT = document.getElementsByClassName("dateT");
+    for(i = 0; i < minT.length; i++){
+        minT[i].setAttribute("min", today);
+    }
+
+</script>
+</body>
+</html>

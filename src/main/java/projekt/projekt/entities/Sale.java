@@ -15,9 +15,8 @@ public class Sale {
     @ManyToOne
     private Product product;
 
-    protected Sale(){}
-    public Sale(Long id, String dateFrom, String dateTo, Double price, Product product) {
-        this.id = id;
+    public Sale(){}
+    public Sale(String dateFrom, String dateTo, Double price, Product product) {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.price = price;

@@ -29,62 +29,16 @@
             
             <div class="collapse navbar-collapse justify-content-around" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item dropdown navbar-brand">
-                        <a class="dropdown" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Twarz</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item fs-5" href="#">Oczyszczanie i demakijaż</a>
-                            <a class="dropdown-item fs-5" href="#">Pięlęgnacja</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown navbar-brand">
-                        <a class="dropdown" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Makijaż</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item fs-5" href="#">Twarz</a>
-                            <a class="dropdown-item fs-5" href="#">Oczy</a>
-                            <a class="dropdown-item fs-5" href="#">Brwi</a>
-                            <a class="dropdown-item fs-5" href="#">Usta</a>
-                            <a class="dropdown-item fs-5" href="#">Paznokcie</a>
-                            <a class="dropdown-item fs-5" href="#">Akcesoria do makijażu</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown navbar-brand">
-                        <a class="dropdown" href="#" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Włosy</a>
-                        <div class="dropdown-menu navbar-brand" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item fs-5" href="#">Pielęgnacja</a>
-                            <a class="dropdown-item fs-5" href="#">Koloryzacja</a>
-                            <a class="dropdown-item fs-5" href="#">Stytlizacja</a>
-                            <a class="dropdown-item fs-5" href="#">Akcesoria do włosów</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown navbar-brand">
-                        <a class="dropdown" href="#" id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciało</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item fs-5" href="#">Pielęgnacja ciała</a>
-                            <a class="dropdown-item fs-5" href="#">Pielęgnacja dłoni</a>
-                            <a class="dropdown-item fs-5" href="#">Pielęgnacja stóp</a>
-                            <a class="dropdown-item fs-5" href="#">Pielęgnacja paznokci</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown navbar-brand">
-                        <a class="dropdown" href="#" id="navbarDropdown5" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Higiena</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item fs-5" href="#">Kąpiel</a>
-                            <a class="dropdown-item fs-5" href="#">Dezodoranty</a>
-                            <a class="dropdown-item fs-5" href="#">Higiena jamy ustnej</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown navbar-brand">
-                        <a class="dropdown" href="#" id="navbarDropdown6" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Perfumy</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item fs-5" href="#">Perfumy damskie</a>
-                            <a class="dropdown-item fs-5" href="#">Perfumy męskie</a>
+                    <li class="nav-item dropdown navbar-brand" th:each="up: ${catUp}">
+                        <a class="dropdown" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" th:text="${up.name}"></a>
+                        <div class="dropdown-menu">
+                            <div th:each="down: ${catDown}">
+                                <a class="dropdown-item fs-5" href="#" th:if="${down.subcategory.name == up.name}" th:text="${down.name}"></a>
+                            </div>
                         </div>
                     </li>
                 </ul>
-                 
                 <div><div class="input-group">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Szukaj" aria-label="Search">
-                    <a class="btn btn-light btn-outline-dark" href="#"><i class="fas fa-search"></i></a>
                 </div></div>
             </div>
         </nav>

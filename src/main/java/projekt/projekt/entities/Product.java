@@ -10,6 +10,8 @@ public class Product {
     private Long id;
     private String name;
     private int quantity;
+
+
     private double price;
     @Lob
     private String description;
@@ -19,8 +21,12 @@ public class Product {
     @ManyToOne
     private Producer producer;
 
+    @ManyToOne
+    private Photo photo;
+
     protected Product(){}
     public Product(String name, int quantity, double price, String description, Category category, Producer producer) {
+
         this.name = name;
         this.quantity = quantity;
         this.price = price;
@@ -50,9 +56,13 @@ public class Product {
     public double getPrice() {
         return price;
     }
+    public String getParsedPrice(){
+        return String.format("%.2f", price);
+    }
     public void setPrice(double price) {
         this.price = price;
     }
+
     public String getDescription() {
         return description;
     }
@@ -70,5 +80,11 @@ public class Product {
     }
     public void setProducer(Producer producer) {
         this.producer = producer;
+    }
+    public Photo getPhoto() {
+        return photo;
+    }
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 }

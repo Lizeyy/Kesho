@@ -11,12 +11,15 @@ public class Login {
     private String name;
     private String password;
     private String role;
+    private boolean active;
+    private String token;
 
     public Login(){}
-    public Login(String name, String password, String role){
+    public Login(String name, String password){
         this.name = name;
         this.password = password;
-        this.role = role;
+        this.role = "ROLE_CLIENT";
+        this.active = false;
     }
 
     public Long getId() {
@@ -42,5 +45,17 @@ public class Login {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    public String getToken() {
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
     }
 }

@@ -2,23 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="main.css">
     <script src="https://kit.fontawesome.com/b34d66382a.js" crossorigin="anonymous"></script>
     <title>Drogeria Kesho!</title>
 </head>
-<body> 
+<body>
+    <div id="particles-js"></div>
     <header>
-        <nav class="navbar navbar-dark justify-content-around" id="main">
+        <nav class="navbar navbar-dark justify-content-around">
             <div><a class="navbar-brand" href="/index"><img style="width: 50%;" th:src="@{/images/Logo.png}"/></a></div>
-            <div>
-                <a class="navbar-brand h3" href="/cart">
-                    <i class="fas fa-shopping-basket"></i> KOSZYK</a>
+            <div class="d-flex">
+                <a class="navbar-brand" href="/client/cart">
+                    <i class="fas fa-shopping-basket"></i> &nbsp;KOSZYK</a>
                 <a class="navbar-brand" href="/login">
-                    <i class="fas fa-user"></i> KONTO</a>
+                    <i class="fas fa-user"></i> &nbsp;KONTO</a>
                 <a th:if="${auth}" class="navbar-brand" href="/logout">
-                    <i class="fas fa-sign-out-alt"></i></i> WYLOGUJ</a>
+                    <i class="fas fa-sign-out-alt"></i></i> &nbsp;WYLOGUJ</a>
             </div>
         </nav>
 
@@ -26,14 +29,14 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
             </button>
-            
+
             <div class="collapse navbar-collapse justify-content-around" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown navbar-brand" th:each="up: ${catUp}">
-                        <a class="dropdown" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" th:text="${up.name}"></a>
+                        <a class="dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-mdb-toggle="dropdown" th:text="${up.name}"></a>
                         <div class="dropdown-menu">
                             <div th:each="down: ${catDown}">
-                                <a class="dropdown-item fs-5" href="#" th:if="${down.subcategory.name == up.name}" th:text="${down.name}"></a>
+                                <a class="dropdown-item fs-5" th:href="@{/list(cat=${down.id},page=1)}" th:if="${down.subcategory.name == up.name}" th:text="${down.name}"></a>
                             </div>
                         </div>
                     </li>
@@ -44,17 +47,617 @@
         </nav>
     </header>
 
-    
-    
+    <div class="m-3">
+        <section>
+            <div class="container d-block d-md-none">
+                <h2 style="color: rgb(250, 250, 250);">Kończące się promocje</h2>
+                <div th:if="${salesEnding2SM.getTotalElements() > 1}">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn-floating h1" href="#sSM" role="button" data-slide="prev"><i class="fas fa-chevron-circle-left"></i></a>
+                            <a class="btn-floating h1" href="#sSM" role="button" data-slide="next"><i class="fas fa-chevron-circle-right"></i></a>
+                        </div>
+                        <div class="col-12">
+                            <div id="sSM" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-11 m-3 shadow" th:each="sale: ${salesEnding1SM}"><a th:href="@{/product(id=${sale.product.id})}">
+                                                <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                                    <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                                    <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-11 m-3 shadow" th:each="sale: ${salesEnding2SM}"><a th:href="@{/product(id=${sale.product.id})}">
+                                                <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                                    <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                                    <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${salesEnding2SM.getTotalElements() <= 1 && salesEnding2SM.getTotalElements() > 0}">
+                    <div class="row justify-content-center">
+                        <div class="card col-11 m-3 shadow" th:each="sale: ${salesEnding1SM}"><a th:href="@{/product(id=${sale.product.id})}">
+                            <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                            </div>
+                            <div class="card-footer">
+                                <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                            </div>
+                        </a></div>
+                    </div>
+                </div>
+                <div th:if="${salesEnding2SM.getTotalElements() == 0}">
+                    <h5 class="text-danger mt-2">Obecnie nie ma żadnych promocji. Wpadnij sprawdzić za jakiś czas.  <i class="far fa-smile-wink"></i></h5>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container d-none d-md-block d-lg-none">
+                <h2 style="color: rgb(250, 250, 250);">Kończące się promocje</h2>
+                <div th:if="${salesEnding2MD.getTotalElements() > 2}">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn-floating h1" href="#sMD" role="button" data-slide="prev"><i class="fas fa-chevron-circle-left"></i></a>
+                            <a class="btn-floating h1" href="#sMD" role="button" data-slide="next"><i class="fas fa-chevron-circle-right"></i></a>
+                        </div>
+                        <div class="col-12">
+                            <div id="sMD" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-5 m-3 shadow" th:each="sale: ${salesEnding1MD}"><a th:href="@{/product(id=${sale.product.id})}">
+                                                <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                                    <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                                    <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-5 m-3 shadow" th:each="sale: ${salesEnding2MD}"><a th:href="@{/product(id=${sale.product.id})}">
+                                                <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                                    <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                                    <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${salesEnding2MD.getTotalElements() <= 2 && salesEnding2LG.getTotalElements() > 0}">
+                    <div class="row justify-content-center">
+                        <div class="card col-5 m-3 shadow" th:each="sale: ${salesEnding1MD}"><a th:href="@{/product(id=${sale.product.id})}">
+                            <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                            </div>
+                            <div class="card-footer">
+                                <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                            </div>
+                        </a></div>
+                    </div>
+                </div>
+                <div th:if="${salesEnding2MD.getTotalElements() == 0}">
+                    <h5 class="text-danger mt-2">Obecnie nie ma żadnych promocji. Wpadnij sprawdzić za jakiś czas.  <i class="far fa-smile-wink"></i></h5>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container d-none d-lg-block d-xl-none">
+                <h2 style="color: rgb(250, 250, 250);">Kończące się promocje</h2>
+                <div th:if="${salesEnding2LG.getTotalElements() > 3}">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn-floating h1" href="#s" role="button" data-slide="prev"><i class="fas fa-chevron-circle-left"></i></a>
+                            <a class="btn-floating h1" href="#s" role="button" data-slide="next"><i class="fas fa-chevron-circle-right"></i></a>
+                        </div>
+                        <div class="col-12">
+                            <div id="s" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-3 m-3 shadow" th:each="sale: ${salesEnding1LG}"><a th:href="@{/product(id=${sale.product.id})}">
+                                                <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                                    <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                                    <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-3 m-3 shadow" th:each="sale: ${salesEnding2LG}"><a th:href="@{/product(id=${sale.product.id})}">
+                                                <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                                    <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                                    <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${salesEnding2LG.getTotalElements() <= 3 && salesEnding2LG.getTotalElements() > 0}">
+                    <div class="row justify-content-center">
+                        <div class="card col-3 m-3 shadow" th:each="sale: ${salesEnding1LG}"><a th:href="@{/product(id=${sale.product.id})}">
+                            <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                            </div>
+                            <div class="card-footer">
+                                <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                            </div>
+                        </a></div>
+                    </div>
+                </div>
+                <div th:if="${salesEnding2LG.getTotalElements() == 0}">
+                    <h5 class="text-danger mt-2">Obecnie nie ma żadnych promocji. Wpadnij sprawdzić za jakiś czas.  <i class="far fa-smile-wink"></i></h5>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container d-none d-xl-block">
+                <h2 style="color: rgb(250, 250, 250);">Kończące się promocje</h2>
+                <div th:if="${salesEnding2XL.getTotalElements() > 4}">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn-floating h1" href="#sXL" role="button" data-slide="prev"><i class="fas fa-chevron-circle-left"></i></a>
+                            <a class="btn-floating h1" href="#sXL" role="button" data-slide="next"><i class="fas fa-chevron-circle-right"></i></a>
+                        </div>
+                        <div class="col-12">
+                            <div id="sXL" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-2 m-3 shadow" th:each="sale: ${salesEnding1XL}"><a th:href="@{/product(id=${sale.product.id})}">
+                                                <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                                    <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                                    <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-2 m-3 shadow" th:each="sale: ${salesEnding2XL}"><a th:href="@{/product(id=${sale.product.id})}">
+                                                <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                                    <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                                    <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${salesEnding2XL.getTotalElements() <= 4 && salesEnding2XL.getTotalElements() > 0}">
+                    <div class="row justify-content-center">
+                        <div class="card col-2 m-3 shadow" th:each="sale: ${salesEnding1XL}"><a th:href="@{/product(id=${sale.product.id})}">
+                            <img th:src="@{${sale.product.photo.name}}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${sale.product.name}"></h5>
+                                <h6 class="card-subtitle sale text-secondary mt-1" th:text="${sale.product.getParsedPrice()} + ' zł'"></h6>
+                                <h4 class="text-danger bold" th:text="${sale.getParsedPrice() + ' zł'}"></h4>
+                            </div>
+                            <div class="card-footer">
+                                <p class="card-subtitle text-secondary small" th:utext="'Od <strong>' + ${sale.dateFrom} + '</strong> do <strong>' + ${sale.dateTo} +'</strong>'"></p>
+                            </div>
+                        </a></div>
+                    </div>
+                </div>
+                <div th:if="${salesEnding2XL.getTotalElements() == 0}">
+                    <h5 class="text-danger mt-2">Obecnie nie ma żadnych promocji. Wpadnij sprawdzić za jakiś czas.  <i class="far fa-smile-wink"></i></h5>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-4">
+            <div class="container d-block d-md-none">
+                <h2 style="color: rgb(250, 250, 250);">Ostatnie sztuki</h2>
+                <div th:if="${productLast2SM.getTotalElements() > 1}">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn-floating h1" href="#lSM" role="button" data-slide="prev"><i class="fas fa-chevron-circle-left"></i></a>
+                            <a class="btn-floating h1" href="#lSM" role="button" data-slide="next"><i class="fas fa-chevron-circle-right"></i></a>
+                        </div>
+                        <div class="col-12">
+                            <div id="lSM" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-12 m-3 shadow" th:each="product: ${productLast1SM}"><a th:href="@{/product(id=${product.id})}">
+                                                <img th:src="@{${product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                                    <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                                        <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                        <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                                    </div>
+                                                    <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                                        <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-muted mt-1">
+                                                    <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-12 m-3 shadow" th:each="product: ${productLast2SM}"><a th:href="@{/product(id=${product.id})}">
+                                                <img th:src="@{${product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                                    <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                                        <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                        <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                                    </div>
+                                                    <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                                        <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-muted mt-1">
+                                                    <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${productLast2SM.getTotalElements() <= 1 && productLast2SM.getTotalElements() > 0}">
+                    <div class="row justify-content-center">
+                        <div class="card col-12 m-3 shadow" th:each="product: ${productLast1SM}"><a th:href="@{/product(id=${product.id})}">
+                            <img th:src="@{${product.photo.name}}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${product.name}"></h5>
+                                <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                    <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                    <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                </div>
+                                <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                    <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted mt-1">
+                                <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                            </div>
+                        </a></div>
+                    </div>
+                </div>
+                <div th:if="${productLast2SM.getTotalElements() == 0}">
+                    <h5 class="text-danger mt-2">Obecnie nasze magazyny są zapełnione.  <i class="far fa-smile-wink"></i></h5>
+                </div>
+            </div>
+        </section>
+        <section class="mt-4">
+            <div class="container d-none d-md-block d-lg-none">
+                <h2 style="color: rgb(250, 250, 250);">Ostatnie sztuki</h2>
+                <div th:if="${productLast2MD.getTotalElements() > 2}">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn-floating h1" href="#lMD" role="button" data-slide="prev"><i class="fas fa-chevron-circle-left"></i></a>
+                            <a class="btn-floating h1" href="#lMD" role="button" data-slide="next"><i class="fas fa-chevron-circle-right"></i></a>
+                        </div>
+                        <div class="col-12">
+                            <div id="lMD" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-5 m-3 shadow" th:each="product: ${productLast1MD}"><a th:href="@{/product(id=${product.id})}">
+                                                <img th:src="@{${product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                                    <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                                        <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                        <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                                    </div>
+                                                    <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                                        <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-muted mt-1">
+                                                    <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-5 m-3 shadow" th:each="product: ${productLast2MD}"><a th:href="@{/product(id=${product.id})}">
+                                                <img th:src="@{${product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                                    <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                                        <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                        <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                                    </div>
+                                                    <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                                        <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-muted mt-1">
+                                                    <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${productLast2MD.getTotalElements() <= 2 && productLast2MD.getTotalElements() > 0}">
+                    <div class="row justify-content-center">
+                        <div class="card col-5 m-3 shadow" th:each="product: ${productLast1MD}"><a th:href="@{/product(id=${product.id})}">
+                            <img th:src="@{${product.photo.name}}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${product.name}"></h5>
+                                <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                    <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                    <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                </div>
+                                <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                    <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted mt-1">
+                                <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                            </div>
+                        </a></div>
+                    </div>
+                </div>
+                <div th:if="${productLast2MD.getTotalElements() == 0}">
+                    <h5 class="text-danger mt-2">Obecnie nasze magazyny są zapełnione.  <i class="far fa-smile-wink"></i></h5>
+                </div>
+            </div>
+        </section>
+        <section class="mt-4">
+            <div class="container d-none d-lg-block d-xl-none">
+                <h2 style="color: rgb(250, 250, 250);">Ostatnie sztuki</h2>
+                <div th:if="${productLast2LG.getTotalElements() > 3}">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn-floating h1" href="#lLG" role="button" data-slide="prev"><i class="fas fa-chevron-circle-left"></i></a>
+                            <a class="btn-floating h1" href="#lLG" role="button" data-slide="next"><i class="fas fa-chevron-circle-right"></i></a>
+                        </div>
+                        <div class="col-12">
+                            <div id="lLG" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-3 m-3 shadow" th:each="product: ${productLast1LG}"><a th:href="@{/product(id=${product.id})}">
+                                                <img th:src="@{${product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                                    <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                                        <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                        <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                                    </div>
+                                                    <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                                        <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-muted mt-1">
+                                                    <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-3 m-3 shadow" th:each="product: ${productLast2LG}"><a th:href="@{/product(id=${product.id})}">
+                                                <img th:src="@{${product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                                    <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                                        <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                        <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                                    </div>
+                                                    <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                                        <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-muted mt-1">
+                                                    <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${productLast2LG.getTotalElements() <= 3 && productLast2LG.getTotalElements() > 0}">
+                    <div class="row justify-content-center">
+                        <div class="card col-3 m-3 shadow" th:each="product: ${productLast1LG}"><a th:href="@{/product(id=${sale.product.id})}">
+                            <img th:src="@{${product.photo.name}}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${product.name}"></h5>
+                                <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                    <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                    <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                </div>
+                                <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                    <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted mt-1">
+                                <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                            </div>
+                        </a></div>
+                    </div>
+                </div>
+                <div th:if="${productLast2LG.getTotalElements() == 0}">
+                    <h5 class="text-danger mt-2">Obecnie nasze magazyny są zapełnione.  <i class="far fa-smile-wink"></i></h5>
+                </div>
+            </div>
+        </section>
+        <section class="mt-4">
+            <div class="container d-none d-xl-block">
+                <h2 style="color: rgb(250, 250, 250);">Ostatnie sztuki</h2>
+                <div th:if="${productLast2XL.getTotalElements() > 4}">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a class="btn-floating h1" href="#lXL" role="button" data-slide="prev"><i class="fas fa-chevron-circle-left"></i></a>
+                            <a class="btn-floating h1" href="#lXL" role="button" data-slide="next"><i class="fas fa-chevron-circle-right"></i></a>
+                        </div>
+                        <div class="col-12">
+                            <div id="lXL" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-2 m-3 shadow" th:each="product: ${productLast1XL}"><a th:href="@{/product(id=${product.id})}">
+                                                <img th:src="@{${product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                                    <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                                        <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                        <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                                    </div>
+                                                    <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                                        <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-muted mt-1">
+                                                    <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="card col-2 m-3 shadow" th:each="product: ${productLast2XL}"><a th:href="@{/product(id=${product.id})}">
+                                                <img th:src="@{${product.photo.name}}" class="card-img-top">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                                    <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                                        <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                        <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                                    </div>
+                                                    <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                                        <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-muted mt-1">
+                                                    <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                                                </div>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${productLast2XL.getTotalElements() <= 4 && productLast2XL.getTotalElements() > 0}">
+                    <div class="row justify-content-center">
+                        <div class="card col-2 m-3 shadow" th:each="product: ${productLast1XL}"><a th:href="@{/product(id=${product.id})}">
+                            <img th:src="@{${product.photo.name}}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${product.name}"></h5>
+                                <div th:if="${comp.getSaleProduct(product.id) != null}" class="mt-1 d-block">
+                                    <h6 class="card-subtitle sale text-secondary" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                    <h4 class="text-danger bold" th:text="${comp.getSaleProduct(product.id).getParsedPrice()} + ' zł'"></h4>
+                                </div>
+                                <div th:if="${comp.getSaleProduct(product.id) == null}" class="mt-1">
+                                    <h6 class="card-subtitle text-danger" th:text="${product.getParsedPrice()} + ' zł'"></h6>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted mt-1">
+                                <p class="card-subtitle text-secondary" th:utext="'Zostało <strong>' + ${product.quantity} + '</strong> sztuk'"></p>
+                            </div>
+                        </a></div>
+                    </div>
+                </div>
+                <div th:if="${productLast2XL.getTotalElements() == 0}">
+                    <h5 class="text-danger mt-2">Obecnie nasze magazyny są zapełnione.  <i class="far fa-smile-wink"></i></h5>
+                </div>
+            </div>
+        </section>
+    </div>
 
     <footer>
         <hr class="m-8">
         <div>
-            <h6 style="text-align: center;">Projekt zaliczeniowy z przedmiotu Aplikacje Bazodanowe w Języku Java - Izabela Wojtowicz</h6>
+            <h6 style="text-align: center; color: rgb(250, 250, 250);">Projekt zaliczeniowy z przedmiotu Aplikacje Bazodanowe w Języku Java - Izabela Wojtowicz</h6>
         </div>
     </footer>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="/back.js"></script>
 </body>
 </html>

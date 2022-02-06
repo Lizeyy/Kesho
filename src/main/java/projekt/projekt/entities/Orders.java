@@ -1,8 +1,6 @@
 package projekt.projekt.entities;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="Orders")
@@ -19,16 +17,13 @@ public class Orders {
     private Status status;
     @ManyToOne
     private Delivery delivery;
-    @ManyToOne
-    private Discount discount;
 
-    protected Orders(){}
-    public Orders(double cost, String date, Status status, Delivery  delivery, Discount discount, Cart cart) {
+    public Orders(){}
+    public Orders(double cost, String date, Status status, Delivery  delivery, Cart cart) {
         this.cost = cost;
         this.date = date;
         this.status = status;
         this.delivery = delivery;
-        this.discount = discount;
         this.cart = cart;
     }
 
@@ -67,11 +62,5 @@ public class Orders {
     }
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
-    }
-    public Discount getDiscount() {
-        return discount;
-    }
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
     }
 }

@@ -11,4 +11,6 @@ public class PasswordEncoder {
         String encodedAdmin = encoder.encode(passwordAdmin);
         System.out.println("haslo zakodowane dla admin: |"+encodedAdmin+"|");
     }
+
+
 }

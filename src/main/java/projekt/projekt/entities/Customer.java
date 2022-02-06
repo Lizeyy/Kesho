@@ -18,7 +18,7 @@ public class Customer {
     @OneToOne
     private Login login;
 
-    protected Customer(){}
+    public Customer(){}
     public Customer(String firstName, String lastName, String email, String phone, Address address, Login login) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -70,4 +70,6 @@ public class Customer {
     public void setLogin(Login login) {
         this.login = login;
     }
+
+    public String getName(){return firstName + " " + lastName;}
 }

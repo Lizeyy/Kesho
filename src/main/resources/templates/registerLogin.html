@@ -13,6 +13,8 @@
     <nav class="navbar navbar-dark justify-content-around" id="main">
         <div><a class="navbar-brand" href="/index"><img style="width: 50%;" th:src="@{/images/Logo.png}"/></a></div>
         <div>
+            <a class="navbar-brand h3" href="/client/cart">
+                <i class="fas fa-shopping-basket"></i> KOSZYK</a>
             <a class="navbar-brand" href="/login">
                 <i class="fas fa-user"></i> KONTO</a>
             <a th:if="${auth}" class="navbar-brand" href="/logout">
@@ -20,11 +22,21 @@
         </div>
     </nav>
 </header>
+<div class="text-center mt-2">
+    <h5 class="text-danger" th:if="${busy}">Podany login już zajęty</h5>
+</div>
 
-
-Upsi! Coś poszło nie tak! ;(
-<p th:text="${error}"></p>
-
+<h3 class="m-4">Nowe Konto</h3>
+<div class="w-100">
+    <form method="POST" th:action="@{/register/login}" th:object="${register}">
+        <div class="input-group mt-3 d-block text-center was-validated">
+            <div class="d-block mb-3"><label class="label">Login<input class="form-control" type="text" th:field="*{nameLogin}" minlength="6" required/><p class="text-secondary">Minimum 6 znaków</p> </label></div>
+            <div class="d-block mb-3"><label class="label">Hasło<input class="form-control" type="password" id="password" th:field="*{pass}" pattern=".{6,}" required/><p class="text-secondary">Minimum 6 znaków</p> </label></div>
+            <div class="d-block mb-3"><label class="label">Powtórz hasło<input class="form-control" type="password" id="confirm_password" required/> </label></div>
+            <button type="submit" class="btn btn-light btn-outline-dark rounded">Dalej</button>
+        </div>
+    </form>
+</div>
 
 
 <br><br>
@@ -35,7 +47,24 @@ Upsi! Coś poszło nie tak! ;(
     </div>
 </footer>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="/scripts.js"></script>
+<script type="text/javascript">
+    var password = document.getElementById("password")
+      , confirm_password = document.getElementById("confirm_password");
+
+    function validatePassword(){
+      if(password.value != confirm_password.value) {
+        confirm_password.setCustomValidity("Passwords Don't Match");
+      } else {
+        confirm_password.setCustomValidity('');
+      }
+    }
+
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+</script>
 </body>
 </html>

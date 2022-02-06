@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import projekt.projekt.entities.Producer;
-import projekt.projekt.entities.Product;
 
 import javax.persistence.Lob;
 import java.util.List;
@@ -32,6 +31,8 @@ public class AddItems {
     private String discountCode, discountDateFrom, discountDateTo;
     private int discountRebate;
     private List<Producer> discountList;
+
+    private String statusName, statusDescription;
 
     //private String saleDateFrom, saleDateTo;
     //private double salePrice;

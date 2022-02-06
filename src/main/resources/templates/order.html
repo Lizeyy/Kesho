@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.css" rel="stylesheet"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://kit.fontawesome.com/b34d66382a.js" crossorigin="anonymous"></script>
+    <title>Drogeria Kesho!</title>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-dark justify-content-around" id="main">
+        <div><a class="navbar-brand" href="/index"><img style="width: 50%;" th:src="@{/images/Logo.png}"/></a></div>
+        <div class="d-flex">
+            <a class="navbar-brand" href="/client/cart">
+                <i class="fas fa-shopping-basket"></i> &nbsp;KOSZYK</a>
+            <a class="navbar-brand" href="/login">
+                <i class="fas fa-user"></i> &nbsp;KONTO</a>
+            <a class="navbar-brand" href="/logout">
+                <i class="fas fa-sign-out-alt"></i></i> &nbsp;WYLOGUJ</a>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg justify-content-around  gx-2 align-items-center" id="cat">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-around" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown navbar-brand" th:each="up: ${catUp}">
+                    <a class="dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-mdb-toggle="dropdown" th:text="${up.name}"></a>
+                    <div class="dropdown-menu">
+                        <div th:each="down: ${catDown}">
+                            <a class="dropdown-item fs-5" th:href="@{/list(cat=${down.id},page=1)}" th:if="${down.subcategory.name == up.name}" th:text="${down.name}"></a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div><div class="input-group">
+            </div></div>
+        </div>
+    </nav>
+</header>
+
+
+<form method="post" th:action="@{/client/cart/success(idCart=${cart.id})}" th:object="${addOrder}">
+<div class="m-3 text-center row d-flex">
+    <h1>Podsumowanie</h1>
+    <div class="col-md-4 mt-5" style="border-right: solid #282828;">
+        <h3 class="">Dane do wysyłki</h3>
+        <p th:text="${customer.name}" class="mt-3"></p>
+        <p th:text="'ul. ' + ${customer.address.street} + ' ' + ${customer.address.houseNumber} + '/' + ${customer.address.apartmentNumber}"></p>
+        <p th:text="${customer.address.zipCode} + ' ' + ${customer.address.city}"></p>
+        <p th:text="'tel. ' + ${customer.phone}"></p>
+        <p th:text="'Adres e-mail: ' + ${customer.email}"></p>
+
+            <div class="mt-3 text-center mb-2">
+                <h3>Dostawa</h3>
+                <select class="form-select" id="delClick" required onchange="delivery();" th:field="*{deliveryID}">
+                    <option value="">Wybierz</option>
+                    <option th:each="del : ${listDelivery}" th:value="${del.id}" th:utext="${del.name} + '&nbsp; <strong>' + ${del.getParsed()} + '</strong>'" th:data-choose="${del.cost}"></option>
+                </select>
+            </div>
+            <input type="submit"  class="btn btn-dark btn-rounded" value="Zatwierdź">
+
+    </div>
+    <div class="col-md-7 mt-5">
+        <h3>Zmówione produkty</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produkt</th>
+                    <th>Ilość</th>
+                    <th>Cena jednostkowa</th>
+                    <th>Do zapłaty</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product: ${products}">
+                    <th th:text="${product.product.name}"></th>
+                    <th th:text="${product.quantity}"></th>
+                    <th>
+                        <div th:if="${comp.getSaleProduct(product.product.id) != null}" class="d-block">
+                            <p th:text="${comp.getSaleProduct(product.product.id).getParsedPrice()} + ' zł'"></p>
+                        </div>
+                        <div th:if="${comp.getSaleProduct(product.product.id) == null}" class="">
+                            <p th:text="${product.product.getParsedPrice()} + ' zł'"></p>
+                        </div>
+                    </th>
+                    <th>
+                        <div th:if="${comp.getSaleProduct(product.product.id) != null}" class="d-block">
+                        <p class="sum" th:text="${comp.getParsedSale({product.quantity}, {product.product.id})}" th:data-price="${comp.getNotParsedSale({product.quantity}, {product.product.id})}"></p>
+                        </div>
+                        <div th:if="${comp.getSaleProduct(product.product.id) == null}" class="">
+                            <p class="sum" th:text="${comp.getParsed({product.quantity}, {product.product.price})}" th:data-price="${product.quantity} * ${product.product.price}"></p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Dostawa</th>
+                    <th>1</th>
+                    <th>-</th>
+                    <th id="del" class="sum" data-price="0">0 zł</th>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"> Suma </td>
+                    <td class="text-danger" id="suma"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+<input type="hidden" id="hiddenSum" th:field="*{cost}">
+</div>
+</form>
+
+<footer>
+    <hr class="m-8">
+    <div>
+        <h6 style="text-align: center;">Projekt zaliczeniowy z przedmiotu Aplikacje Bazodanowe w Języku Java - Izabela Wojtowicz</h6>
+    </div>
+</footer>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    calc();
+    function calc(){
+        let list = $(".sum").map(function(){
+            return $(this).data("price");
+        }).get();
+        sum = 0;
+        list[list.length - 1] = document.getElementById("del").dataset.price;
+        for(i = 0; i < list.length; i++){
+            sum += parseFloat(list[i]);
+        }
+        document.getElementById("suma").innerHTML = sum.toFixed(2) + ' zł';
+        document.getElementById("hiddenSum").value = sum + '';
+    }
+    function delivery(){
+        let sel = document.getElementById("delClick").options[document.getElementById("delClick").selectedIndex];
+        let p = parseFloat(sel.dataset.choose);
+        document.getElementById("del").innerHTML = p.toFixed(2) + ' zł';
+        document.getElementById("del").dataset.price = p;
+        calc();
+    }
+
+</script>
+</body>
+</html>

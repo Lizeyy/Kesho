@@ -19,9 +19,13 @@ public class EditItems {
 
     private String editProducer, newProducer;
 
-    private double newPrice, newSalePrice, newNextSalePrice, newUpNextSalePrice;
-    private String newDate, newNextDateFrom, newNextDateTo, newUpNextDateFrom, newUpNextDateTo;
+    private double newPrice, nextSalePrice, upSalePrice;
+    private String nextDateFrom, nextDateTo, upDateFrom, upDateTo;
     @Lob private String newDescription;
     private int newQuantity;
     private Product product;
+
+    private String deliveryName, newDeliveryName;
+    private String deliveryCost;
+    private boolean deliveryActive;
 }

@@ -6,5 +6,7 @@ import projekt.projekt.entities.Login;
 import java.util.List;
 
 public interface LoginRepository extends JpaRepository<Login, Long> {
-    List<Login> findByNameAndPassword(String name, String password);
+    List<Login> findByName(String name);
+
+    List<Login> findByToken(String token);
 }

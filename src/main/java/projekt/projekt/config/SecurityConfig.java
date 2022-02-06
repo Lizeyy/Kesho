@@ -19,8 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeRequests()
-                .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/staff").hasAuthority("ROLE_STAFF")
+                .antMatchers("/staff/*").hasAuthority("ROLE_STAFF")
                 .antMatchers("/client").hasAuthority("ROLE_CLIENT")
                 .antMatchers("/client/*").hasAuthority("ROLE_CLIENT")
                 .anyRequest().permitAll()
@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.jdbcAuthentication()
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .dataSource(dataSource)
-                .usersByUsernameQuery("SELECT name, password, 'true' from login WHERE name=?")
+                .usersByUsernameQuery("SELECT name, password, 'true' from login WHERE active=true AND name=?")
                 .authoritiesByUsernameQuery("SELECT name, role, 'true' from login WHERE name=?");
     }
 }

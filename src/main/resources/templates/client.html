@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.css" rel="stylesheet"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://kit.fontawesome.com/b34d66382a.js" crossorigin="anonymous"></script>
+    <title>Drogeria Kesho!</title>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-dark justify-content-around" id="main">
+        <div><a class="navbar-brand" href="/index"><img style="width: 50%;" th:src="@{/images/Logo.png}"/></a></div>
+        <div class="d-flex">
+            <a class="navbar-brand" href="/client/cart">
+                <i class="fas fa-shopping-basket"></i> &nbsp;KOSZYK</a>
+            <a class="navbar-brand" href="/login">
+                <i class="fas fa-user"></i> &nbsp;KONTO</a>
+            <a class="navbar-brand" href="/logout">
+                <i class="fas fa-sign-out-alt"></i></i> &nbsp;WYLOGUJ</a>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg justify-content-around  gx-2 align-items-center" id="cat">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-around" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown navbar-brand" th:each="up: ${catUp}">
+                    <a class="dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-mdb-toggle="dropdown" th:text="${up.name}"></a>
+                    <div class="dropdown-menu">
+                        <div th:each="down: ${catDown}">
+                            <a class="dropdown-item fs-5" th:href="@{/list(cat=${down.id},page=1)}" th:if="${down.subcategory.name == up.name}" th:text="${down.name}"></a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div><div class="input-group">
+            </div></div>
+        </div>
+    </nav>
+</header>
+
+<div class="m-3">
+    <h2 th:text="${customer.getName()}"></h2>
+    <div class="d-flex justify-content-center">
+        <a href="#" data-target="#orderNow" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3">Aktualne zamówienia</a>
+        <a href="#" data-target="#orders" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3">Historia zamówień</a>
+    </div>
+    <div class="d-flex justify-content-center">
+        <a href="#" data-target="#show" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3">Pokaż informacje</a>
+        <a href="#" data-target="#data" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3">Edytuj dane</a>
+        <a href="#" data-target="#address" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3">Edytuj adres</a>
+    </div>
+</div>
+
+
+<div class="modal fade " tabindex="-1" role="dialog" id="orderNow" data-mdb-backdrop="static" data-mdb-keyboard="false">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Realizowane zamówienia</h4>
+                <button class="close" data-dismiss="modal">X</button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Koszt</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order: ${ordersNow}">
+                            <th th:text="${order.date}"></th>
+                            <th th:text="${order.cost} + ' zł'"></th>
+                            <th th:text="${order.status.name}"></th>
+                            <th><a th:href="@{client/order/check(id=${order.id})}">Szczegóły</a></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " tabindex="-1" role="dialog" id="orders" data-mdb-backdrop="static" data-mdb-keyboard="false">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Realizowane zamówienia</h4>
+                <button class="close" data-dismiss="modal">X</button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Koszt</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order: ${orders}">
+                        <th th:text="${order.date}"></th>
+                        <th th:text="${order.cost} + ' zł'"></th>
+                        <th th:text="${order.status.name}"></th>
+                        <th><a th:href="@{client/order/check(id=${order.id})}">Szczegóły</a></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="show" data-mdb-backdrop="static" data-mdb-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal">X</button>
+            </div>
+            <div class="modal-body row">
+                <h4 th:text="${customer.getName()}"></h4>
+                <div class="col-4"><label>Telefon</label></div>
+                <div class="col-8"><h5 th:text="${customer.phone}"></h5></div>
+                <div class="col-4"><label>Adres e-mail</label></div>
+                <div class="col-8"><h5 th:text="${customer.email}"></h5></div>
+                <br>
+                <div class="col-4"><label>Ulica</label></div>
+                <div class="col-8"><h5 th:text="${customer.address.street}"></h5></div>
+                <div class="col-4"><label>Budynek</label></div>
+                <div class="col-8"><h5 th:text="${customer.address.houseNumber}"></h5></div>
+                <div class="col-4"><label>Mieszkanie</label></div>
+                <div class="col-8"><h5 th:text="${customer.address.apartmentNumber}"></h5></div>
+                <div class="col-4"><label>Kod pocztowy</label></div>
+                <div class="col-8"><h5 th:text="${customer.address.zipCode}"></h5></div>
+                <div class="col-4"><label>Miasto</label></div>
+                <div class="col-8"><h5 th:text="${customer.address.city}"></h5></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="data" data-mdb-backdrop="static" data-mdb-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal">X</button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/client/change/data" th:object="${edit}">
+                    <label>Imię</label><input class="form-control" type="text" th:field="*{firstName}">
+                    <label>Nazwisko</label><input class="form-control" type="text" th:field="*{lastName}">
+                    <label>Telefon</label><input class="form-control" type="text" th:field="*{phone}" maxlength="9" pattern="[0-9]{9}">
+                    <div class="mt-3 d-flex justify-content-end">
+                        <input type="submit" class="btn btn-dark btn-rounded" value="Zapisz"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="address" data-mdb-backdrop="static" data-mdb-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal">X</button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/client/change/address" th:object="${edit}">
+                    <label>Ulica</label><input class="form-control" type="text" th:field="*{street}">
+                    <label>Numer budynku</label><input class="form-control" type="text" th:field="*{house_number}">
+                    <label>Numer domu</label><input class="form-control" type="text" th:field="*{apartment_number}">
+                    <label>Kod pocztowy</label><input class="form-control" type="text" th:field="*{zip}" pattern="[0-9]{2}[-][0-9]{3}">
+                    <label>Miasto</label><input class="form-control" type="text" th:field="*{city}">
+                    <div class="mt-3 d-flex justify-content-end">
+                        <input type="submit" class="btn btn-dark btn-rounded" value="Zapisz"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer>
+    <hr class="m-8">
+    <div>
+        <h6 style="text-align: center;">Projekt zaliczeniowy z przedmiotu Aplikacje Bazodanowe w Języku Java - Izabela Wojtowicz</h6>
+    </div>
+</footer>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+</body>
+</html>

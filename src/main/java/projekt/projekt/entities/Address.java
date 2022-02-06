@@ -14,7 +14,7 @@ public class Address {
     private String zipCode;
     private String city;
 
-    protected Address(){}
+    public Address(){}
     public Address(String street, String houseNumber, String apartmentNumber, String zipCode, String city){
         this.street = street;
         this.houseNumber = houseNumber;

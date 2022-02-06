@@ -53,4 +53,8 @@ public class Sale {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public String getParsedPrice(){
+        return String.format("%.2f", price);
+    }
 }

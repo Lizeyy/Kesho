@@ -27,22 +27,40 @@
         <i class="fas fa-exclamation-circle fa-spin"></i>
     </div>
 
+    <h2 class="m-2" style="color: rgb(32, 45, 53); background-color: rgb(183, 214, 211);">Zamówienia</h2>
+    <div class="mt-3">
+        <div class="d-md-flex justify-content-center">
+            <a href="#" data-target="#order1" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3 m-4">Złożone</a>
+            <a href="#" data-target="#order2" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3 m-4">Pakowanie</a>
+            <a href="#" data-target="#order3" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3 m-4">Przed wysyłką</a>
+            <a href="#" data-target="#order4" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3 m-4">Wysłane</a>
+            <a href="#" data-target="#order5" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3 m-4">Odebrane</a>
+            <a href="#" data-target="#orders" data-toggle="modal" type="button" class="btn btn-dark btn-rounded m-md-3 m-4">Wszystkie</a>
+        </div>
+    </div>
+
+
     <h2 class="m-2" style="color: rgb(32, 45, 53); background-color: rgb(183, 214, 211);">Dodawanie</h2>
     <div class="d-block d-md-flex mt-3" id="add">
         <div class="nav flex-column nav-pills w-25" id="v-pills-tab" role="tablist">
-            <a class="nav-link" id="v-pills-rebate-tab" data-toggle="pill" href="#v-pills-rebate" role="tab">Rabat</a>
+            <a class="nav-link" id="v-pills-delivery-tab" data-toggle="pill" href="#v-pills-delivery" role="tab">Dostawca</a>
             <a class="nav-link" id="v-pills-product-tab" data-toggle="pill" href="#v-pills-product" role="tab">Produkt</a>
             <a class="nav-link" id="v-pills-prod-tab" data-toggle="pill" href="#v-pills-prod" role="tab">Producent</a>
             <a class="nav-link" id="v-pills-cat-tab" data-toggle="pill" href="#v-pills-cat" role="tab" >Kategoria</a>
+            <a class="nav-link" id="v-pills-status-tab" data-toggle="pill" href="#v-pills-status" role="tab" >Status</a>
         </div>
 
         <div class="tab-content ms-3 mt-sm-3 w-75" id="v-pills-tabContent">
-            <div class="tab-pane fade" id="v-pills-rebate" role="tabpanel">
-                <form method="post" th:object="${addItems}" action="/staff/addProducer" class="d-block">
+            <div class="tab-pane fade" id="v-pills-delivery" role="tabpanel">
+                <form method="post" th:object="${addItems}" action="/staff/addDelivery" class="d-block">
                     <div class="me-4">
                         <div class="">
-                            <label class="d-block h5">Nazwa producenta</label>
-                            <input class="form-control d-block" type="text" th:field="*{producerName}" required>
+                            <label class="d-block h5">Nazwa dostawcy</label>
+                            <input class="form-control d-block" type="text" th:field="*{deliveryName}" required>
+                        </div>
+                        <div class="mt-md-3">
+                            <label class="d-block h5">Koszt</label>
+                            <input class="form-control d-block dec price" type="number" min="0.01" step="0.01" placeholder="0,00" th:field="*{deliveryCost}" required>
                         </div>
                     </div>
                     <div class="mt-5 text-center">
@@ -60,8 +78,8 @@
                         </div>
                         <div class="mt-md-3 d-flex align-items-lg-center justify-content-around align-items-end">
                             <div class="w-50">
-                                <label class="d-block h5">Cena produktu</label>
-                                <input class="form-control d-block dec" type="number" min="0.01" step="0.01" placeholder="0,00" th:field="*{productPrice}" required>
+                                <label class="d-block h5 price">Cena produktu</label>
+                                <input class="form-control d-block dec price" type="number" min="0.01" step="0.01" placeholder="0,00" th:field="*{productPrice}" required>
                             </div>
                             <div class="w-50">
                                 <label class="d-block h5">Ilość</label>
@@ -139,6 +157,22 @@
 
                 </form>
             </div>
+
+            <div class="tab-pane fade was-validated" id="v-pills-status" role="tabpanel">
+                <form method="post" th:object="${addItems}" action="/staff/addStatus" class="d-block">
+                    <div class="me-4">
+                        <div class="">
+                            <label class="d-block h5">Nazwa</label>
+                            <input class="form-control d-block" type="text" th:field="*{statusName}" required>
+                            <label class="d-block h5">Opis</label>
+                            <input class="form-control d-block" type="text" th:field="*{statusDescription}" required>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <input class="btn btn-light btn-outline-dark" type="submit" value="Zapisz">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -147,12 +181,37 @@
     <div class="d-block d-md-flex mt-3" id="edit">
         <div class="nav flex-column nav-pills w-25" id="v-pills-tab-edit" role="tablist">
             <a class="nav-link" id="v-pills-product-tab-edit" data-toggle="pill" href="#v-pills-product-edit" role="tab">Produkt</a>
-            <a class="nav-link" id="v-pills-rebate-tab-edit" data-toggle="pill" href="#v-pills-rebate-edit" role="tab">Rabat</a>
+            <a class="nav-link" id="v-pills-delivery-tab-edit" data-toggle="pill" href="#v-pills-delivery-edit" role="tab">Dostawa</a>
             <a class="nav-link" id="v-pills-prod-tab-edit" data-toggle="pill" href="#v-pills-prod-edit" role="tab">Producent</a>
         </div>
 
         <div class="tab-content ms-3 mt-sm-3 w-75" id="v-pills-tabContent-edit">
-            <div class="tab-pane fade" id="v-pills-rebate-edit" role="tabpanel">...</div>
+            <div class="tab-pane fade" id="v-pills-delivery-edit" role="tabpanel">
+                <form method="post" th:object="${editItems}" action="/staff/editDelivery" class="d-block">
+                    <div class="me-4">
+                        <div class="row">
+                            <label class="d-block h5">Dostawca</label>
+                            <select class="form-select" th:field="*{deliveryName}" required>
+                                <option value="">Wybierz</option>
+                                <option th:each="del : ${listDelivery}" th:value="${del.name}" th:text="${del.name}"></option>
+                            </select>
+                            <label class="d-block h5 mt-md-3">Nowa nazwa</label>
+                            <input class="form-control d-block" type="text" th:field="*{newDeliveryName}">
+                            <div class="col-6">
+                                <label class="d-block h5 mt-md-3">Koszt</label>
+                                <input class="form-control d-block dec price" type="number" min="0.01" step="0.01" placeholder="0,00" th:field="*{deliveryCost}">
+                            </div>
+                            <div class="col-5 form-check mt-md-3 ms-3">
+                                <label class="h5 mt-md-3 form-check-label">Aktywny</label>
+                                <input class="h5 mt-md-3 form-check-input" type="checkbox" th:field="*{deliveryActive}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <input class="btn btn-light btn-outline-dark" type="submit" value="Zapisz">
+                    </div>
+                </form>
+            </div>
 
             <div class="tab-pane fade" id="v-pills-product-edit" role="tabpanel">
                 <div class="me-4">
@@ -171,7 +230,7 @@
                                             </div>
                                             <div class="col-7">
                                                 <a class="fs-4 disabled" th:text="${product.name}"></a>
-                                                <p th:text="${product.price} + ' zł'"></p>
+                                                <p th:text="${product.getParsedPrice()} + ' zł'"></p>
                                             </div>
                                             <div class="col-2">
                                                 <a class="btn btn-light btn-outline-dark" th:href="@{/staff/editProduct(id=${product.id})}">Wybierz</a>
@@ -208,6 +267,330 @@
 
 
 
+    <div class="modal fade " tabindex="-1" role="dialog" id="order1" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Złożone zamówienia</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${order1.size() > 0}">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Nr</th>
+                            <th>Klient</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order: ${order1}">
+                            <th th:text="${order.id}"></th>
+                            <th th:text="${order.cart.customer.name}"></th>
+                            <th th:text="${order.date}"></th>
+                            <th th:text="${order.status.name}"></th>
+                            <th><a th:href="@{staff/order/check(id=${order.id})}">Szczegóły</a></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div th:if="${order1.size() == 0}">
+                        <h2>Nie ma zamówień o statusie 'złożone zamówienia'</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade " tabindex="-1" role="dialog" id="order2" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>W trakcie pakowania</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${order2.size() > 0}">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Nr</th>
+                            <th>Klient</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order: ${order2}">
+                            <th th:text="${order.id}"></th>
+                            <th th:text="${order.cart.customer.name}"></th>
+                            <th th:text="${order.date}"></th>
+                            <th th:text="${order.status.name}"></th>
+                            <th><a th:href="@{staff/order/check(id=${order.id})}">Szczegóły</a></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div th:if="${order2.size() == 0}">
+                        <h2>Nie ma zamówień o statusie 'w trakcie pakowania'</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade " tabindex="-1" role="dialog" id="order3" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Czeka na wysyłkę</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${order3.size() > 0}">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Nr</th>
+                            <th>Klient</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order: ${order3}">
+                            <th th:text="${order.id}"></th>
+                            <th th:text="${order.cart.customer.name}"></th>
+                            <th th:text="${order.date}"></th>
+                            <th th:text="${order.status.name}"></th>
+                            <th><a th:href="@{staff/order/check(id=${order.id})}">Szczegóły</a></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div th:if="${order3.size() == 0}">
+                        <h2>Nie ma zamówień o statusie 'czeka na wysyłkę'</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade " tabindex="-1" role="dialog" id="order4" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Wysłane</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${order4.size() > 0}">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Nr</th>
+                            <th>Klient</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order: ${order4}">
+                            <th th:text="${order.id}"></th>
+                            <th th:text="${order.cart.customer.name}"></th>
+                            <th th:text="${order.date}"></th>
+                            <th th:text="${order.status.name}"></th>
+                            <th><a th:href="@{staff/order/check(id=${order.id})}">Szczegóły</a></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div th:if="${order4.size() == 0}">
+                        <h2>Nie ma zamówień o statusie 'wysłane'</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade " tabindex="-1" role="dialog" id="order5" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Odebrane</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${order5.size() > 0}">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Nr</th>
+                            <th>Klient</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order: ${order5}">
+                            <th th:text="${order.id}"></th>
+                            <th th:text="${order.cart.customer.name}"></th>
+                            <th th:text="${order.date}"></th>
+                            <th th:text="${order.status.name}"></th>
+                            <th><a th:href="@{staff/order/check(id=${order.id})}">Szczegóły</a></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div th:if="${order5.size() == 0}">
+                        <h2>Nie ma zamówień o statusie 'odebrane'</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade " tabindex="-1" role="dialog" id="orders" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Wszystkie</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${orders.size() > 0}">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Nr</th>
+                            <th>Klient</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order: ${orders}">
+                            <th th:text="${order.id}"></th>
+                            <th th:text="${order.cart.customer.name}"></th>
+                            <th th:text="${order.date}"></th>
+                            <th th:text="${order.status.name}"></th>
+                            <th><a th:href="@{staff/order/check(id=${order.id})}">Szczegóły</a></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div th:if="${orders.size() == 0}">
+                        <h2>Brak zamówień</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade " tabindex="-1" role="dialog" id="categoryAll" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Wszystko</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${orders.size() > 0}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Nazwa</th>
+                                <th>Ilość</th>
+                                <th>Koszt</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cat: ${categories}">
+                                <th th:text="${order.id}"></th>
+                                <th th:text="${order.cart.customer.name}"></th>
+                                <th th:text="${order.date}"></th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${orders.size() == 0}">
+                        <h2>Brak</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade " tabindex="-1" role="dialog" id="categoryLast" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Wszystko</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${orders.size() > 0}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Nazwa</th>
+                                <th>Ilość</th>
+                                <th>Koszt</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="order: ${orders}">
+                                <th th:text="${order.id}"></th>
+                                <th th:text="${order.cart.customer.name}"></th>
+                                <th th:text="${order.date}"></th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${orders.size() == 0}">
+                        <h2>Brak</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade " tabindex="-1" role="dialog" id="productAll" data-mdb-backdrop="static" data-mdb-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Wszystkie</h4>
+                    <button class="close" data-dismiss="modal">X</button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${orders.size() > 0}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Nazwa</th>
+                                <th>Ilość</th>
+                                <th>Koszt</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="order: ${orders}">
+                                <th th:text="${order.cart}"></th>
+                                <th th:text="${order.cart.customer.name}"></th>
+                                <th th:text="${order.date}"></th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${orders.size() == 0}">
+                        <h2>Brak</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <br><br>
     <footer>
         <hr class="m-8">
@@ -225,6 +608,12 @@
                 $(this).val(parseFloat($(this).val()).toFixed(2));
             });
         });
+
+            let i;
+            let prices = document.getElementsByClassName("price");
+            for(i = 0; i<prices.length; i++){
+                prices[i].value = "";
+            }
     </script>
 </body>
 </html>

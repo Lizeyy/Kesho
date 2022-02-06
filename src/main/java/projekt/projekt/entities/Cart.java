@@ -1,7 +1,14 @@
 package projekt.projekt.entities;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
-import java.util.*;
+import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="Cart")
@@ -9,41 +16,27 @@ public class Cart {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    private int quantity;
-    private String date;
     private boolean bought;
 
     @ManyToOne
     private Customer customer;
-    @ManyToMany(targetEntity = Product.class)
-    private List<Product> productList;
 
-    protected Cart(){}
-    public Cart(int quantity, String date, boolean bought, Customer customer) {
-        this.quantity = quantity;
-        this.date = date;
-        this.bought = bought;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<CartProduct> productList = new ArrayList<>();
+
+    public Cart(){}
+    public Cart(Customer customer) {
         this.customer = customer;
         productList = new ArrayList<>();
     }
+
+  //  public void addProduct(Product product){this.productList.add(product);}
 
     public Long getId() {
         return id;
     }
     public void setId(Long id) {
         this.id = id;
-    }
-    public int getQuantity() {
-        return quantity;
-    }
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-    public String getDate() {
-        return date;
-    }
-    public void setDate(String date) {
-        this.date = date;
     }
     public boolean isBought() {
         return bought;
@@ -57,10 +50,46 @@ public class Cart {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-    public List<Product> getProductList() {
-        return productList;
+
+    @Transactional
+    public void addProduct(Product product, LocalDate date, int q){
+        Hibernate.initialize(this);
+        CartProduct cartProduct = new CartProduct(this, product, date, q);
+        productList.add(cartProduct);
+        product.getCartProducts().add(cartProduct);
     }
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
+    @Transactional
+    public void removeProduct(Product product){
+        for(Iterator<CartProduct> iterator = productList.iterator(); iterator.hasNext();) {
+            CartProduct cartProduct = iterator.next();
+            if(cartProduct.getCart().equals(this) && cartProduct.getProduct().equals(product)){
+                iterator.remove();
+                cartProduct.getProduct().getCartProducts().remove(cartProduct);
+                cartProduct.setProduct(null);
+                cartProduct.setCart(null);
+            }
+        }
     }
+
+    public String getStringId(){
+        return id.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cart cart = (Cart) o;
+        return Objects.equals(bought, cart.bought);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(bought);
+    }
+//   public List<Product> getProductList() {
+ //       return productList;
+ //   }
+ //   public void setProductList(List<Product> productList) {
+ //      this.productList = productList;
+ //  }
 }

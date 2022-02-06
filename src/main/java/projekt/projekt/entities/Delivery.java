@@ -11,11 +11,17 @@ public class Delivery {
     private Long id;
     private String name;
     private double cost;
+    private boolean active;
 
     protected Delivery(){}
-    public Delivery(String name, double cost) {
+    public Delivery(String name, double cost, boolean active) {
         this.name = name;
         this.cost = cost;
+        this.active = active;
+    }
+
+    public String getParsed(){
+        return String.format("%.2f", cost) + " zł";
     }
 
     public Long getId() {
@@ -35,5 +41,11 @@ public class Delivery {
     }
     public void setCost(double cost) {
         this.cost = cost;
+    }
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

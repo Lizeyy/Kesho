@@ -28,3 +28,13 @@ function gallery(imgs) {
   expandImg.src = imgs.src;
   expandImg.parentElement.style.display = "block";
 }
+
+
+function beforeClick(){
+    let inp = document.getElementsByClassName("price");
+    let i;
+    for(i = 0; i < inp.length; i++){
+        if(inp[i].value.length == 0) inp[i].value = "0.0";
+    }
+    alert(inp[2].value)
+}

@@ -24,23 +24,64 @@
     </nav>
 </header>
 
-<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error}">
-    <i class="fas fa-exclamation-circle fa-spin"></i>
-    <h3 th:text="'&emsp;' + ${error} + '&emsp;'"></h3>
-    <i class="fas fa-exclamation-circle fa-spin"></i>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${notification}">
+    <i class="fas fa-check-circle"></i>
+    <h3 th:text="'&emsp;' + ${notification} + '&emsp;'"></h3>
+    <i class="fas fa-check-circle"></i>
 </div>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error0}">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3 th:text="'&emsp;' + ${error0} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle"></i>
+</div>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error1}">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3 th:text="'&emsp;' + ${error1} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle"></i>
+</div>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error2}">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3 th:text="'&emsp;' + ${error2} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle"></i>
+</div>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error3}">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3 th:text="'&emsp;' + ${error3} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle"></i>
+</div>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error4}">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3 th:text="'&emsp;' + ${error4} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle"></i>
+</div>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error5}">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3 th:text="'&emsp;' + ${error5} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle"></i>
+</div>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error6}">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3 th:text="'&emsp;' + ${error6} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle"></i>
+</div>
+<div class="justify-content-center bg-dark text-danger d-flex align-items-center" th:if="${error7}">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3 th:text="'&emsp;' + ${error7} + '&emsp;'"></h3>
+    <i class="fas fa-exclamation-circle"></i>
+</div>
+
 
     <div class="m-4">
         <form method="post" th:action="@{/staff/editProduct(id=${product.id})}" th:object="${editItems}">
             <div class="d-flex row">
                 <div class="col-12 col-lg-6" style="position: relative;">
                     <div class="expandedImg img-thumbnail text-center">
-                        <img th:src="@{'/' + ${photos.get(0).name}}" id="expandedImg" class="w-75">
+                        <img th:src="@{'/' + ${photos.get(0).name}}" id="expandedImg" class="w-100 img-fluid rounded">
                     </div>
 
                     <div class="d-flex">
                         <div class="w-25 hover-zoom img-thumbnail" th:each="photo: ${photos}">
-                            <img class="w-100" th:src="@{'/' + ${photo.name}}" onclick="gallery(this);">
+                            <img class="w-100 rounded" th:src="@{'/' + ${photo.name}}" onclick="gallery(this);">
                         </div>
                     </div>
                 </div>
@@ -50,7 +91,7 @@
                         <label class="h4">Cena regularna</label>
                         <div class="d-flex align-items-baseline">
                             <h3 class="w-25" th:text="${product.getParsedPrice()} + ' zł'"></h3>
-                            <input class="form-control w-auto dec" type="number" min="0.00" step="0.01" placeholder="0,00" th:field="*{newPrice}">
+                            <input class="form-control w-auto dec price" type="number" min="0.00" step="0.01" placeholder="0,00" th:field="*{newPrice}">
                         </div>
                         <hr>
                         <label class="h4">Ilość</label>
@@ -60,6 +101,9 @@
                         </div>
                         <hr>
                         <label class="h4 mt-4">Aktywne promocje</label>
+                        <div th:if="${activeSale == false}">
+                            <h5 class="text-danger">Brak aktywnych promocji</h5>
+                        </div>
                         <div th:if="${activeSale}">
                             <div class="d-flex align-items-baseline row">
                                 <label class="me-3 col-2">Data od </label>
@@ -67,19 +111,12 @@
                             </div>
                             <div class="d-flex align-items-baseline row">
                                 <label class="me-3 col-2">Data do</label>
-                                <p class="h5 col-3" th:text="${activeSale.dateTo}"></p>
-                                <div class="col-6">
-                                <input class="form-control w-100 dateT" th:field="*{newDate}" type="date"></div>
+                                <p class="h5 col-9" th:text="${activeSale.dateTo}"></p>
                             </div>
                             <div class="d-flex align-items-baseline row">
                                 <label class="me-3 col-2">Cena</label>
-                                <p class="h5 col-3" th:text="${activeSale.price} + ' zł'"></p>
-                                <div class="col-6">
-                                <input class="form-control w-100 dec" th:field="*{newSalePrice}" min="0.00" step="0.01" placeholder="0,00" type="number"></div>
+                                <p class="h5 col-9" th:text="${activeSale.getParsedPrice()} + ' zł'"></p>
                             </div>
-                        </div>
-                        <div th:if="${activeSale == false}">
-                            <h5 class="text-danger">Brak aktywnych promocji</h5>
                         </div>
 
                         <label class="h4 mt-4">Przyszłe promocje</label>
@@ -88,19 +125,19 @@
                                 <label class="me-3 col-2">Data od </label>
                                 <p class="h5 col-3" th:text="${nextSale.dateFrom}"></p>
                                 <div class="col-6">
-                                    <input class="form-control w-100 dateT" th:field="*{newUpNextDateFrom}" type="date"></div>
+                                    <input class="form-control w-100 dateT" th:field="*{upDateFrom}" type="date"></div>
                             </div>
                             <div class="d-flex align-items-baseline row">
                                 <label class="me-3 col-2">Data do</label>
                                 <p class="h5 col-3" th:text="${nextSale.dateTo}"></p>
                                 <div class="col-6">
-                                    <input class="form-control w-100 dateT" th:field="*{newUpNextDateTo}" type="date"></div>
+                                    <input class="form-control w-100 dateT" th:field="*{upDateTo}" type="date"></div>
                             </div>
                             <div class="d-flex align-items-baseline row">
                                 <label class="me-3 col-2">Cena</label>
-                                <p class="h5 col-3" th:text="${nextSale.price} + ' zł'"></p>
+                                <p class="h5 col-3" th:text="${nextSale.getParsedPrice()} + ' zł'"></p>
                                 <div class="col-6">
-                                    <input class="form-control w-100 dec" min="0.00" step="0.01" placeholder="0,00" th:field="*{newUpNextSalePrice}" type="number"></div>
+                                    <input class="form-control w-100 dec price" min="0.00" step="0.01" placeholder="0,00" th:field="*{upSalePrice}" type="number"></div>
                             </div>
                         </div>
                         <div th:if="${nextSale == false}">
@@ -108,29 +145,33 @@
                             <div class="d-flex align-items-baseline row">
                                 <label class="me-3 col-3">Data od </label>
                                 <div class="col-6">
-                                    <input class="form-control w-100 dateT" th:field="*{newNextDateFrom}" type="date"></div>
+                                    <input class="form-control w-100 dateT" th:field="*{nextDateFrom}" type="date"></div>
                             </div>
                             <div class="d-flex align-items-baseline row">
                                 <label class="me-3 col-3">Data do</label>
                                 <div class="col-6">
-                                    <input class="form-control w-100 dateT" th:field="*{newNextDateTo}" type="date"></div>
+                                    <input class="form-control w-100 dateT" th:field="*{nextDateTo}" type="date"></div>
                             </div>
                             <div class="d-flex align-items-baseline row">
                                 <label class="me-3 col-3">Cena</label>
                                 <div class="col-6">
-                                    <input class="form-control w-100 dec" min="0.00" step="0.01" placeholder="0,00" th:field="*{newNextSalePrice}" type="number"></div>
+                                    <input class="form-control w-100 dec price" min="0.00" step="0.01" placeholder="0,00" th:field="*{nextSalePrice}" type="number"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row mt-4">
-                <div class="col-9">
-                    <textarea class="form-control" id="writeIn" style="height: 15em;" th:field="*{newDescription}" onload="write(this)"></textarea>
+                <label class="h4">Opis</label>
+                <div class="col-10">
+                    <textarea class="form-control" id="writeIn" style="height: 15em;" th:field="*{newDescription}" onload="write(this)" required></textarea>
                     <textarea style="display: none" id="writeOn" th:text="${product.description}"></textarea>
                 </div>
-                <div class="col-2">
-                    <input class="btn btn-light btn-outline-dark" type="submit" value="Zapisz">
+                <div class="col-1">
+                    <div class="d-block">
+                        <input class="btn btn-light btn-outline-dark" type="submit" onclick="beforeClick()" value="Zapisz">
+                        <a href="/staff" class="btn btn-light btn-outline-dark mt-3">Wróć</a>
+                    </div>
                 </div>
             </div>
             <div>
@@ -141,12 +182,14 @@
                             <td><label class="me-3 col-3">Data od </label></td>
                             <td><label class="me-3 col-3">Data do</label></td>
                             <td><label class="me-3 col-3">Cena</label></td>
+                            <td><label class="me-3 col-3">Ilość sprzedanych</label></td>
                         </thead>
                         <tbody>
                             <tr th:each="prev: ${prevSale}">
                                 <td><p class="h5 col-9" th:text="${prev.dateFrom}"></p></td>
                                 <td><p class="h5 col-3" th:text="${prev.dateTo}"></p></td>
-                                <td><p class="h5 col-3" th:text="${prev.price} + ' zł'"></p></td>
+                                <td><p class="h5 col-3" th:text="${prev.getParsedPrice()} + ' zł'"></p></td>
+                                <td><p class="h5 col-3" th:text="${comp.getQuaOr(product.id, prev.dateFrom, prev.dateTo)}"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -157,7 +200,6 @@
             </div>
         </form>
     </div>
-
 
 
 <br><br>
@@ -173,15 +215,23 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.min.js"></script>
 <script src="/scripts.js"></script>
 <script type="text/javascript">
+    //Zawsze dwa miejsca po przecinku po wpisaniu
     $(document).ready(function () {
-    $(".dec").change(function() {
-    $(this).val(parseFloat($(this).val()).toFixed(2));
-    });
+        $(".dec").change(function() {
+            $(this).val(parseFloat($(this).val()).toFixed(2));
+        });
     });
 
+    //Uzupełnienie pól
     document.getElementById("writeIn").innerHTML = document.getElementById("writeOn").innerHTML;
 
     let i;
+    let prices = document.getElementsByClassName("price");
+    for(i = 0; i<prices.length; i++){
+        prices[i].value = "";
+    }
+
+    //Daty
     var today = new Date();
     var dd = today.getDate();
     var mm = today.getMonth() + 1; //January is 0!

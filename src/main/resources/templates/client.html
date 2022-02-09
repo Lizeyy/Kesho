@@ -68,7 +68,7 @@
                 <button class="close" data-dismiss="modal">X</button>
             </div>
             <div class="modal-body">
-                <table class="table">
+                <table class="table" th:if="${ordersNow.size > 0}">
                     <thead>
                         <tr>
                             <th>Data</th>
@@ -80,12 +80,15 @@
                     <tbody>
                         <tr th:each="order: ${ordersNow}">
                             <th th:text="${order.date}"></th>
-                            <th th:text="${order.cost} + ' zł'"></th>
+                            <th th:text="${order.getParsedCost} + ' zł'"></th>
                             <th th:text="${order.status.name}"></th>
                             <th><a th:href="@{client/order/check(id=${order.id})}">Szczegóły</a></th>
                         </tr>
                     </tbody>
                 </table>
+                <div th:if="${ordersNow.size < 1}">
+                    <h3>Brak aktualnych zamówień</h3>
+                </div>
             </div>
         </div>
     </div>
@@ -95,13 +98,14 @@
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header">
-                <h4>Realizowane zamówienia</h4>
+                <h4>Wszystkie zamówienia</h4>
                 <button class="close" data-dismiss="modal">X</button>
             </div>
             <div class="modal-body">
-                <table class="table">
+                <table class="table" th:if="${orders.size > 0}">
                     <thead>
                     <tr>
+                        <th>Imię i nazwisko</th>
                         <th>Data</th>
                         <th>Koszt</th>
                         <th>Status</th>
@@ -110,13 +114,17 @@
                     </thead>
                     <tbody>
                     <tr th:each="order: ${orders}">
+                        <th th:text="${customer.getName()}" th:rowspan="${orders.size()}" th:if="${order} == ${orders.get(0)}" style="vertical-align : middle;text-align:center;"></th>
                         <th th:text="${order.date}"></th>
-                        <th th:text="${order.cost} + ' zł'"></th>
+                        <th th:text="${order.getParsedCost} + ' zł'"></th>
                         <th th:text="${order.status.name}"></th>
                         <th><a th:href="@{client/order/check(id=${order.id})}">Szczegóły</a></th>
                     </tr>
                     </tbody>
                 </table>
+                <div th:if="${orders.size < 1}">
+                    <h3>Brak historii zamówień</h3>
+                </div>
             </div>
         </div>
     </div>

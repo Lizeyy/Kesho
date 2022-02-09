@@ -63,4 +63,8 @@ public class Orders {
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
     }
+
+    public String getParsedCost(){
+        return String.format("%.2f", cost);
+    }
 }
